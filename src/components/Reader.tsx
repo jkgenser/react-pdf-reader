@@ -1,6 +1,16 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Document, Page } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
+
+// consider using useCallBack to not re-render pages?
+// https://chatgpt.com/c/0fd80b49-412c-4399-ace3-56f1a8e00754
+
+// rotate... hook?
+// jumptopage...  hook?
+// current page number
+// on document loaded
+// on page changed
+// also consider a version that doesn't use tanstack?
 
 const Reader = ({ file }: { file: string }) => {
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -16,6 +26,9 @@ const Reader = ({ file }: { file: string }) => {
     estimateSize: () => 1000, // Adjust the estimateSize to match your page height
     overscan: 2, // Adjust the overscan value if needed
   });
+  const currentPage = rowVirtualizer.getVirtualItems()[0]?.index + 1 || 0;
+
+  console.log("currentPage", currentPage);
 
   return (
     <div
@@ -23,8 +36,6 @@ const Reader = ({ file }: { file: string }) => {
       style={{
         height: "500px",
         overflow: "auto",
-        borderColor: "black",
-        borderWidth: "4px",
         width: "750px",
         // width: "100%",
       }}
@@ -39,7 +50,7 @@ const Reader = ({ file }: { file: string }) => {
         >
           {rowVirtualizer.getVirtualItems().map((virtualItem) => (
             <div
-              key={virtualItem.index}
+              key={virtualItem.key}
               style={{
                 position: "absolute",
                 top: 0,
