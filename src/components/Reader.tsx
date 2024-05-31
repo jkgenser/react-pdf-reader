@@ -54,8 +54,7 @@ const Reader = ({ file }: { file: string }) => {
       style={{
         height: "500px",
         overflow: "auto",
-        width: "750px",
-        // width: "100%",
+        width: "100%",
       }}
     >
       <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
