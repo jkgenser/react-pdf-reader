@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { Document, Page } from "react-pdf";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -15,6 +15,7 @@ import { useDebouncedCallback } from "use-debounce";
 
 const Reader = ({ file }: { file: string }) => {
   const [numPages, setNumPages] = useState<number | null>(null);
+  const [pageHeights, setPageHeights] = useState<Array<number>>([]);
 
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +26,12 @@ const Reader = ({ file }: { file: string }) => {
   const virtualizer = useVirtualizer({
     count: numPages || 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 750,
+    estimateSize: useMemo(
+      () => (index) =>
+        pageHeights && pageHeights[index] ? pageHeights[index] + 45 : 0,
+      [pageHeights]
+    ),
+
     overscan: 1,
   });
 
@@ -45,8 +51,26 @@ const Reader = ({ file }: { file: string }) => {
     };
   }, [handleScroll]);
 
+  useEffect(() => {
+    (async () => {
+      const loadingTask = pdfjs.getDocument(file);
+      const pdf = await loadingTask.promise;
+
+      const heights = await Promise.all(
+        Array.from({ length: pdf.numPages }, async (_, index) => {
+          const page = await pdf.getPage(index + 1);
+          const viewport = page.getViewport({ scale: 1 });
+          return viewport.height;
+        })
+      );
+
+      setPageHeights(heights);
+    })();
+  }, [file]);
+
   const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || 0;
   console.log("currentPage", currentPage);
+  console.log("pageHeights", pageHeights);
 
   return (
     <div
