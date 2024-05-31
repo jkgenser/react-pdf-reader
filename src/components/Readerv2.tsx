@@ -22,7 +22,7 @@ const Reader = ({ file }: { file: string }) => {
     setNumPages(numPages);
   };
 
-  const virtualizer = useVirtualizer({
+  const rowVirtualizer = useVirtualizer({
     count: numPages || 0,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 750,
@@ -31,7 +31,7 @@ const Reader = ({ file }: { file: string }) => {
 
   const handleScroll = useDebouncedCallback(() => {
     if (!parentRef.current) return;
-    virtualizer.scrollToOffset(parentRef.current.scrollTop);
+    rowVirtualizer.scrollToOffset(parentRef.current.scrollTop);
   }, 400);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const Reader = ({ file }: { file: string }) => {
     };
   }, [handleScroll]);
 
-  const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || 0;
+  const currentPage = rowVirtualizer.getVirtualItems()[0]?.index + 1 || 0;
   console.log("currentPage", currentPage);
 
   return (
@@ -60,16 +60,14 @@ const Reader = ({ file }: { file: string }) => {
       <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
         <div
           style={{
-            height: `${virtualizer.getTotalSize()}px`,
+            height: `${rowVirtualizer.getTotalSize()}px`,
             width: "100%",
             position: "relative",
           }}
         >
-          {virtualizer.getVirtualItems().map((virtualItem) => (
+          {rowVirtualizer.getVirtualItems().map((virtualItem) => (
             <div
               key={virtualItem.key}
-              data-index={virtualItem.index}
-              ref={virtualizer.measureElement}
               style={{
                 position: "absolute",
                 top: 0,
@@ -79,9 +77,7 @@ const Reader = ({ file }: { file: string }) => {
                 transform: `translateY(${virtualItem.start}px)`,
               }}
             >
-              <>
-                <Page pageNumber={virtualItem.index + 1} />
-              </>
+              <Page pageNumber={virtualItem.index + 1} />
             </div>
           ))}
         </div>
