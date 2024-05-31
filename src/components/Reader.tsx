@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Document, Page } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useDebouncedCallback } from "use-debounce";
 
 // consider using useCallBack to not re-render pages?
 // https://chatgpt.com/c/0fd80b49-412c-4399-ace3-56f1a8e00754
@@ -23,9 +24,26 @@ const Reader = ({ file }: { file: string }) => {
   const rowVirtualizer = useVirtualizer({
     count: numPages || 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 1000, // Adjust the estimateSize to match your page height
-    overscan: 2, // Adjust the overscan value if needed
+    estimateSize: () => 1000,
+    overscan: 1,
   });
+
+  const handleScroll = useDebouncedCallback(() => {
+    if (!parentRef.current) return;
+    rowVirtualizer.scrollToOffset(parentRef.current.scrollTop);
+  }, 400);
+
+  useEffect(() => {
+    const scrollElement = parentRef.current;
+    if (!scrollElement) return;
+    scrollElement.addEventListener("scroll", handleScroll);
+    return () => {
+      if (scrollElement) {
+        scrollElement.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [handleScroll]);
+
   const currentPage = rowVirtualizer.getVirtualItems()[0]?.index + 1 || 0;
 
   console.log("currentPage", currentPage);
