@@ -35,16 +35,16 @@ function App() {
 
   return (
     <div style={{ width: "700px", height: "600px" }}>
-      <div style={{ display: "flex" }}>
-        <div>{pageNum}</div>
-        <div>
-          <input
-            type="number"
-            value={scale !== null ? scale : ""}
-            onChange={handleScaleChange}
-          />
-        </div>
+      <div>{pageNum}</div>
+      <div>
+        scale
+        <input
+          type="number"
+          value={scale !== null ? scale : ""}
+          onChange={handleScaleChange}
+        />
       </div>
+
       <Reader file={file} onPageChange={onPageChange} scale={scale} />
     </div>
   );
