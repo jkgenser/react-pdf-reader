@@ -23,6 +23,7 @@ const file = "./pdf-open-parameters.pdf";
 function App() {
   const [pageNum, setPageNum] = useState<number | null>(null);
   const [scale, setScale] = useState<number | null>(1);
+  const [rotate, setRotate] = useState<number>(0);
 
   const onPageChange = (e: PageChangeEvent) => {
     setPageNum(e.currentPage);
@@ -32,17 +33,31 @@ function App() {
     const value = parseFloat(e.target.value);
     setScale(isNaN(value) ? null : value);
   };
+  const handleRotationChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setRotate(parseInt(e.target.value, 10));
+  };
 
   return (
     <>
-      <div>{pageNum}</div>
-      <div>
-        scale
-        <input
-          type="number"
-          value={scale !== null ? scale : ""}
-          onChange={handleScaleChange}
-        />
+      <div style={{ display: "flex" }}>
+        <div>Page: {pageNum}</div>
+        <div>
+          scale
+          <input
+            type="number"
+            value={scale !== null ? scale : ""}
+            onChange={handleScaleChange}
+          />
+        </div>
+        <div>
+          Rotation
+          <select value={rotate} onChange={handleRotationChange}>
+            <option value={0}>0</option>
+            <option value={90}>90</option>
+            <option value={180}>180</option>
+            <option value={270}>270</option>
+          </select>
+        </div>
       </div>
       <div
         style={{
@@ -53,8 +68,12 @@ function App() {
           borderStyle: "solid",
         }}
       >
-        {/* @ts-expect-error scale wrong type */}
-        <Reader file={file} onPageChange={onPageChange} scale={scale} />
+        <Reader
+          file={file}
+          onPageChange={onPageChange}
+          scale={scale || 0}
+          rotate={rotate || 0}
+        />
       </div>
     </>
   );

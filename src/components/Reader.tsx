@@ -17,10 +17,12 @@ const EXTRA_HEIGHT = 30;
 const Reader = ({
   file,
   scale = 1,
+  rotate = 0,
   onPageChange,
 }: {
   file: string;
   scale?: number;
+  rotate?: number;
   onPageChange?: (e: PageChangeEvent) => void;
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -136,7 +138,11 @@ const Reader = ({
                   backgroundColor: "white",
                 }}
               >
-                <Page pageNumber={virtualItem.index + 1} scale={scale} />
+                <Page
+                  pageNumber={virtualItem.index + 1}
+                  scale={scale}
+                  rotate={rotate}
+                />
               </div>
             </div>
           ))}
