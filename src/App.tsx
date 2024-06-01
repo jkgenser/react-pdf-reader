@@ -34,7 +34,7 @@ function App() {
   };
 
   return (
-    <div style={{ width: "700px", height: "600px" }}>
+    <>
       <div>{pageNum}</div>
       <div>
         scale
@@ -44,9 +44,18 @@ function App() {
           onChange={handleScaleChange}
         />
       </div>
-
-      <Reader file={file} onPageChange={onPageChange} scale={scale} />
-    </div>
+      <div
+        style={{
+          width: "700px",
+          height: "500px",
+          borderColor: "gray",
+          borderWidth: "1px",
+          borderStyle: "solid",
+        }}
+      >
+        <Reader file={file} onPageChange={onPageChange} scale={scale} />
+      </div>
+    </>
   );
 }
 
