@@ -16,7 +16,7 @@ import {
 // on document loaded
 // need to resize document to an appropriate amount when loading it in?
 
-const EXTRA_HEIGHT = 45;
+const EXTRA_HEIGHT = 30;
 const EXTRA_WIDTH = 45;
 
 const Reader = ({
