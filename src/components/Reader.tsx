@@ -31,14 +31,6 @@ const Reader = ({
   const onDocumentLoadSuccess = async (newPdf: PDFDocumentProxy) => {
     setPdf(newPdf);
     setNumPages(newPdf.numPages);
-    const viewports = await Promise.all(
-      Array.from({ length: newPdf.numPages }, async (_, index) => {
-        const page = await newPdf.getPage(index + 1);
-        const viewport = page.getViewport({ scale: scale });
-        return viewport;
-      })
-    );
-    setPageViewports(viewports);
   };
 
   const estimateSize = useCallback(
@@ -75,13 +67,26 @@ const Reader = ({
   }, [handleScroll]);
 
   useEffect(() => {
-    console.log("Virtualizer initialized:", virtualizer);
-  }, [virtualizer]);
+    const calculateViewports = async () => {
+      if (!pdf) return;
 
-  // Make sure virtualizer re-measures whenever pageHeights is done being set
+      const viewports = await Promise.all(
+        Array.from({ length: pdf.numPages }, async (_, index) => {
+          const page = await pdf.getPage(index + 1);
+          const viewport = page.getViewport({ scale });
+          return viewport;
+        })
+      );
+
+      setPageViewports(viewports);
+    };
+
+    calculateViewports();
+  }, [pdf, scale]);
+
   useEffect(() => {
     virtualizer.measure();
-  }, [viewports, virtualizer]);
+  }, [virtualizer, pdf, scale, viewports]);
 
   // TODO:  figure out a better "on page change" functionality
   useEffect(() => {

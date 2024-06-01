@@ -22,7 +22,7 @@ const file = "./pdf-open-parameters.pdf";
 
 function App() {
   const [pageNum, setPageNum] = useState<number | null>(null);
-  const [scale, setScale] = useState<number>(1);
+  const [scale, setScale] = useState<number | null>(1);
 
   const onPageChange = (e: PageChangeEvent) => {
     setPageNum(e.currentPage);
@@ -30,7 +30,7 @@ function App() {
 
   const handleScaleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
-    setScale(isNaN(value) ? 1 : value);
+    setScale(isNaN(value) ? null : value);
   };
 
   return (
@@ -53,6 +53,7 @@ function App() {
           borderStyle: "solid",
         }}
       >
+        {/* @ts-expect-error scale wrong type */}
         <Reader file={file} onPageChange={onPageChange} scale={scale} />
       </div>
     </>
