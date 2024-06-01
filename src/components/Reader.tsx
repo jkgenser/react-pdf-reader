@@ -12,13 +12,12 @@ const RESERVE_WIDTH = 45; // used when calculating default scale
 
 const determineScale = (parentElement: HTMLElement, width: number): number => {
   const scaleWidth = (parentElement.clientWidth - RESERVE_WIDTH) / width;
-  debugger;
   return scaleWidth;
 };
 
 const Reader = ({
   file,
-  scale = 1,
+  scale = undefined,
   rotation = 0,
   onPageChange,
 }: {
@@ -103,6 +102,7 @@ const Reader = ({
       const firstViewPort = firstPage.getViewport({ scale: 1, rotation });
       const newScale = determineScale(parentRef.current!, firstViewPort.width);
       setDeterminedScale(newScale);
+
       // You may need to update some state with the determined scale here if needed, e.g.,
       // setDeterminedScale(scale);
     };
