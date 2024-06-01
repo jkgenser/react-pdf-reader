@@ -16,9 +16,11 @@ const EXTRA_HEIGHT = 30;
 
 const Reader = ({
   file,
+  scale = 1,
   onPageChange,
 }: {
   file: string;
+  scale?: number;
   onPageChange?: (e: PageChangeEvent) => void;
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -32,7 +34,7 @@ const Reader = ({
     const viewports = await Promise.all(
       Array.from({ length: newPdf.numPages }, async (_, index) => {
         const page = await newPdf.getPage(index + 1);
-        const viewport = page.getViewport({ scale: 1 });
+        const viewport = page.getViewport({ scale: scale });
         return viewport;
       })
     );
@@ -129,7 +131,7 @@ const Reader = ({
                   backgroundColor: "white",
                 }}
               >
-                <Page pageNumber={virtualItem.index + 1} />
+                <Page pageNumber={virtualItem.index + 1} scale={scale} />
               </div>
             </div>
           ))}
