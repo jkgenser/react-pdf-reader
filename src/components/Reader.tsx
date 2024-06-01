@@ -13,10 +13,11 @@ import {
 
 // rotate... hook?
 // jumptopage...  hook?
-// current page number
 // on document loaded
-// on page changed
-// also consider a version that doesn't use tanstack?
+// need to resize document to an appropriate amount when loading it in?
+
+const EXTRA_HEIGHT = 45;
+const EXTRA_WIDTH = 45;
 
 const Reader = ({
   file,
@@ -40,7 +41,9 @@ const Reader = ({
     getScrollElement: () => parentRef.current,
     estimateSize: useMemo(
       () => (index) =>
-        pageHeights && pageHeights[index] ? pageHeights[index] + 45 : 0,
+        pageHeights && pageHeights[index]
+          ? pageHeights[index] + EXTRA_HEIGHT
+          : 0,
       [pageHeights]
     ),
 
@@ -117,7 +120,18 @@ const Reader = ({
                 transform: `translateY(${virtualItem.start}px)`,
               }}
             >
-              <div>
+              <div
+                style={{
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  border: "1px solid lightgray",
+                  borderRadius: "4px", // Optional: for rounded corners
+                  padding: "16px", // Optional: for some spacing around the Page
+                  backgroundColor: "white", // Ensure the background is white if you want a consistent look
+                  // display: "flex",
+                  // flexDirection: "column",
+                  // justifyContent: "center",
+                }}
+              >
                 <Page pageNumber={virtualItem.index + 1} />
               </div>
             </div>
