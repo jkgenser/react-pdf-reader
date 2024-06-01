@@ -12,12 +12,12 @@ const EXTRA_HEIGHT = 30;
 const Reader = ({
   file,
   scale = 1,
-  rotate = 0,
+  rotation = 0,
   onPageChange,
 }: {
   file: string;
   scale?: number;
-  rotate?: number;
+  rotation?: number;
   onPageChange?: (e: PageChangeEvent) => void;
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -70,7 +70,7 @@ const Reader = ({
       const viewports = await Promise.all(
         Array.from({ length: pdf.numPages }, async (_, index) => {
           const page = await pdf.getPage(index + 1);
-          const viewport = page.getViewport({ scale });
+          const viewport = page.getViewport({ scale, rotation });
           return viewport;
         })
       );
@@ -79,7 +79,7 @@ const Reader = ({
     };
 
     calculateViewports();
-  }, [pdf, scale, rotate]);
+  }, [pdf, scale, rotation]);
 
   useEffect(() => {
     virtualizer.measure();
@@ -136,7 +136,7 @@ const Reader = ({
                 <Page
                   pageNumber={virtualItem.index + 1}
                   scale={scale}
-                  rotate={rotate}
+                  rotate={rotation}
                 />
               </div>
             </div>
