@@ -11,7 +11,6 @@ import { PageChangeEvent } from "./types";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 // const file = "./test-pdf.pdf";
-const file = "./pdf-open-parameters.pdf";
 
 // Change zoom
 // Set default scale based on the container it's in
@@ -24,6 +23,7 @@ function App() {
   const [pageNum, setPageNum] = useState<number | null>(null);
   const [scale, setScale] = useState<number | null>(1);
   const [rotate, setRotate] = useState<number>(0);
+  const [file, setFile] = useState<string>("pdf-open-parameters.pdf");
 
   const onPageChange = (e: PageChangeEvent) => {
     setPageNum(e.currentPage);
@@ -35,6 +35,10 @@ function App() {
   };
   const handleRotationChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setRotate(parseInt(e.target.value, 10));
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFile(e.target.value);
   };
 
   return (
@@ -56,6 +60,15 @@ function App() {
             <option value={90}>90</option>
             <option value={180}>180</option>
             <option value={270}>270</option>
+          </select>
+        </div>
+        <div>
+          File
+          <select value={file} onChange={handleFileChange}>
+            <option value="pdf-open-parameters.pdf">
+              pdf-open-parameters.pdf
+            </option>
+            <option value="test-pdf.pdf">test-pdf.pdf</option>
           </select>
         </div>
       </div>

@@ -6,11 +6,6 @@ import { PageChangeEvent } from "../types";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
-// rotate... hook?
-// jumptopage...  hook?
-// on document loaded
-// need to resize document to an appropriate amount when loading it in?
-
 const EXTRA_HEIGHT = 30;
 // const EXTRA_WIDTH = 10;
 
@@ -84,7 +79,7 @@ const Reader = ({
     };
 
     calculateViewports();
-  }, [pdf, scale]);
+  }, [pdf, scale, rotate]);
 
   useEffect(() => {
     virtualizer.measure();
