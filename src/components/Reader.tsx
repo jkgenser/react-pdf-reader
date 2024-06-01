@@ -7,7 +7,7 @@ import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
 const EXTRA_HEIGHT = 30;
-const RESERVE_WIDTH = 45; // used when calculating default scale
+const RESERVE_WIDTH = 100; // used when calculating default scale
 // const EXTRA_WIDTH = 10;
 
 const determineScale = (parentElement: HTMLElement, width: number): number => {
