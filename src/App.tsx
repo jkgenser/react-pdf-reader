@@ -12,7 +12,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 function App() {
   const [pageNum, setPageNum] = useState<number | null>(null);
-  const [scale, setScale] = useState<number | null>(1);
+  const [scale, setScale] = useState<number | null>(0.75);
   const [rotation, setRotation] = useState<number>(0);
   const [file, setFile] = useState<string>("pdf-open-parameters.pdf");
 
@@ -31,7 +31,6 @@ function App() {
   const handleFileChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setFile(e.target.value);
   };
-  console.log("outerscale", scale);
 
   return (
     <>
@@ -66,7 +65,7 @@ function App() {
       </div>
       <div
         style={{
-          width: "900px",
+          width: "800px",
           height: "500px",
           borderColor: "gray",
           borderWidth: "1px",

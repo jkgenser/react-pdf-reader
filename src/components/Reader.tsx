@@ -105,7 +105,7 @@ const Reader = ({
     };
 
     fetchPageAndSetScale();
-  }, [pdf, initialScale, scale, rotation]);
+  }, [pdf, initialScale, rotation]);
 
   useEffect(() => {
     virtualizer.measure();
@@ -114,10 +114,7 @@ const Reader = ({
   // TODO:  figure out a better "on page change" functionality
   useEffect(() => {
     onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
-    console.log("currentPage", currentPage);
   }, [currentPage, pdf, onPageChange]);
-
-  console.log("scale", scale);
 
   return (
     <div
@@ -138,6 +135,7 @@ const Reader = ({
         >
           {virtualizer.getVirtualItems().map((virtualItem) => (
             <div
+              id="page-wrapper-wrapper"
               key={virtualItem.key}
               data-index={virtualItem.index}
               style={{
@@ -147,18 +145,22 @@ const Reader = ({
                 width: "100%",
                 height: `${virtualItem.size}px`,
                 transform: `translateY(${virtualItem.start}px)`,
+                display: "flex",
+                justifyContent: "center",
               }}
             >
               <div
+                id="page-wrapper"
                 style={{
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   border: "1px solid lightgray",
-                  display: "flex",
-                  justifyContent: "center",
                   width: `${viewports[virtualItem.index].width + 15}px`,
                   borderRadius: "4px",
-                  padding: "5px",
+                  padding: "0px",
+                  margin: "5px",
                   backgroundColor: "white",
+                  display: "flex",
+                  justifyContent: "center",
                 }}
               >
                 <Page
