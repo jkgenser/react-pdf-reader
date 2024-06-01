@@ -6,10 +6,8 @@ import { PageChangeEvent } from "../types";
 import {
   PDFDocumentProxy,
   PDFPageProxy,
+  PageViewport,
 } from "pdfjs-dist/types/src/display/api";
-
-// consider using useCallBack to not re-render pages?
-// https://chatgpt.com/c/0fd80b49-412c-4399-ace3-56f1a8e00754
 
 // rotate... hook?
 // jumptopage...  hook?
@@ -17,7 +15,7 @@ import {
 // need to resize document to an appropriate amount when loading it in?
 
 const EXTRA_HEIGHT = 30;
-const EXTRA_WIDTH = 45;
+const EXTRA_WIDTH = 10;
 
 const Reader = ({
   file,
@@ -28,28 +26,28 @@ const Reader = ({
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageHeights, setPageHeights] = useState<Array<number>>([]);
+  const [viewports, setPageViewports] = useState<Array<PageViewport>>([]);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
 
   const onDocumentLoadSuccess = async (newPdf: PDFDocumentProxy) => {
     setPdf(newPdf);
     setNumPages(newPdf.numPages);
-    const heights = await Promise.all(
+    const viewports = await Promise.all(
       Array.from({ length: newPdf.numPages }, async (_, index) => {
         const page = await newPdf.getPage(index + 1);
         const viewport = page.getViewport({ scale: 1 });
-        return viewport.height;
+        return viewport;
       })
     );
-    setPageHeights(heights);
+    setPageViewports(viewports);
   };
 
   const estimateSize = useCallback(
     (index: number) => {
-      if (!pageHeights) return 0;
-      return pageHeights[index] + EXTRA_HEIGHT;
+      if (!viewports) return 0;
+      return viewports[index].height + EXTRA_HEIGHT;
     },
-    [pageHeights]
+    [viewports]
   );
 
   const virtualizer = useVirtualizer({
@@ -84,7 +82,7 @@ const Reader = ({
   // Make sure virtualizer re-measures whenever pageHeights is done being set
   useEffect(() => {
     virtualizer.measure();
-  }, [pageHeights, virtualizer]);
+  }, [viewports, virtualizer]);
 
   // TODO: potentially figure out a better "on page change" functionality
   useEffect(() => {
@@ -129,9 +127,10 @@ const Reader = ({
                   border: "1px solid lightgray",
                   display: "flex",
                   justifyContent: "center",
-                  borderRadius: "4px", // Optional: for rounded corners
-                  // padding: "10px", // Optional: for some spacing around the Page
-                  backgroundColor: "white", // Ensure the background is white if you want a consistent look
+                  width: `${viewports[virtualItem.index].width + 15}px`,
+                  borderRadius: "4px",
+                  padding: "5px",
+                  backgroundColor: "white",
                 }}
               >
                 <Page pageNumber={virtualItem.index + 1} />

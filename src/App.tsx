@@ -10,7 +10,14 @@ import { PageChangeEvent } from "./types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-const file = "./pdf-open-parameters.pdf";
+const file = "./test-pdf.pdf";
+
+// Change zoom
+// Set default scale based on the container it's in
+// Rotate
+// jumptopage
+// render highlights
+// Be able to handle the horizontal width to support documents that have some landscape pages
 
 function App() {
   const [pageNum, setPageNum] = useState<number | null>(null);
