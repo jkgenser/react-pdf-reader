@@ -31,6 +31,7 @@ function App() {
   const handleFileChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setFile(e.target.value);
   };
+  console.log("outerscale", scale);
 
   return (
     <>
@@ -65,7 +66,7 @@ function App() {
       </div>
       <div
         style={{
-          width: "700px",
+          width: "900px",
           height: "500px",
           borderColor: "gray",
           borderWidth: "1px",

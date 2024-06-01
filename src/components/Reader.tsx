@@ -93,20 +93,19 @@ const Reader = ({
 
   useEffect(() => {
     if (!pdf) return;
-    if (scale) return;
-
+    if (initialScale) {
+      setScale(initialScale);
+      return;
+    }
     const fetchPageAndSetScale = async () => {
       const firstPage = await pdf.getPage(1);
       const firstViewPort = firstPage.getViewport({ scale: 1, rotation });
       const newScale = determineScale(parentRef.current!, firstViewPort.width);
       setScale(newScale);
-
-      // You may need to update some state with the determined scale here if needed, e.g.,
-      // setDeterminedScale(scale);
     };
 
     fetchPageAndSetScale();
-  }, [pdf, scale, rotation]);
+  }, [pdf, initialScale, scale, rotation]);
 
   useEffect(() => {
     virtualizer.measure();
