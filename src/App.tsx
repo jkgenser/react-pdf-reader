@@ -75,7 +75,7 @@ function App() {
         <Reader
           file={file}
           onPageChange={onPageChange}
-          // scale={scale || 0}
+          initialScale={scale || undefined}
           rotation={rotation || 0}
         />
       </div>

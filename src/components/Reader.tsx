@@ -17,12 +17,12 @@ const determineScale = (parentElement: HTMLElement, width: number): number => {
 
 const Reader = ({
   file,
-  scale = undefined,
+  initialScale = undefined,
   rotation = 0,
   onPageChange,
 }: {
   file: string;
-  scale?: number;
+  initialScale?: number;
   rotation?: number;
   onPageChange?: (e: PageChangeEvent) => void;
 }) => {
@@ -30,9 +30,7 @@ const Reader = ({
   const [numPages, setNumPages] = useState<number | null>(null);
   const [viewports, setPageViewports] = useState<Array<PageViewport>>([]);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
-  const [determinedScale, setDeterminedScale] = useState<number | undefined>(
-    scale
-  );
+  const [scale, setScale] = useState<number | undefined>(initialScale);
 
   const onDocumentLoadSuccess = async (newPdf: PDFDocumentProxy) => {
     setPdf(newPdf);
@@ -80,7 +78,7 @@ const Reader = ({
         Array.from({ length: pdf.numPages }, async (_, index) => {
           const page = await pdf.getPage(index + 1);
           const viewport = page.getViewport({
-            scale: determinedScale as number,
+            scale: scale as number,
             rotation,
           });
           return viewport;
@@ -91,28 +89,28 @@ const Reader = ({
     };
 
     calculateViewports();
-  }, [pdf, determinedScale, rotation]);
+  }, [pdf, scale, rotation]);
 
   useEffect(() => {
     if (!pdf) return;
-    if (determinedScale) return;
+    if (scale) return;
 
     const fetchPageAndSetScale = async () => {
       const firstPage = await pdf.getPage(1);
       const firstViewPort = firstPage.getViewport({ scale: 1, rotation });
       const newScale = determineScale(parentRef.current!, firstViewPort.width);
-      setDeterminedScale(newScale);
+      setScale(newScale);
 
       // You may need to update some state with the determined scale here if needed, e.g.,
       // setDeterminedScale(scale);
     };
 
     fetchPageAndSetScale();
-  }, [pdf, determinedScale, rotation]);
+  }, [pdf, scale, rotation]);
 
   useEffect(() => {
     virtualizer.measure();
-  }, [virtualizer, pdf, determinedScale, viewports]);
+  }, [virtualizer, pdf, scale, viewports]);
 
   // TODO:  figure out a better "on page change" functionality
   useEffect(() => {
@@ -120,7 +118,7 @@ const Reader = ({
     console.log("currentPage", currentPage);
   }, [currentPage, pdf, onPageChange]);
 
-  console.log("determinedScale", determinedScale);
+  console.log("scale", scale);
 
   return (
     <div
@@ -166,7 +164,7 @@ const Reader = ({
               >
                 <Page
                   pageNumber={virtualItem.index + 1}
-                  scale={determinedScale}
+                  scale={scale}
                   rotate={rotation}
                 />
               </div>
