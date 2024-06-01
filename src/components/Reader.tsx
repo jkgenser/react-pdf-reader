@@ -26,9 +26,9 @@ const Reader = ({
   file: string;
   onPageChange?: (e: PageChangeEvent) => void;
 }) => {
+  const parentRef = useRef<HTMLDivElement>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageHeights, setPageHeights] = useState<Array<number>>([]);
-  const parentRef = useRef<HTMLDivElement>(null);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
 
   const onDocumentLoadSuccess = async (newPdf: PDFDocumentProxy) => {
@@ -81,14 +81,16 @@ const Reader = ({
     console.log("Virtualizer initialized:", virtualizer);
   }, [virtualizer]);
 
+  // Make sure virtualizer re-measures whenever pageHeights is done being set
   useEffect(() => {
     virtualizer.measure();
   }, [pageHeights, virtualizer]);
 
+  // TODO: potentially figure out a better "on page change" functionality
   useEffect(() => {
     onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
     console.log("currentPage", currentPage);
-  }, [currentPage]);
+  }, [currentPage, pdf, onPageChange]);
 
   return (
     <div
@@ -125,8 +127,10 @@ const Reader = ({
                 style={{
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   border: "1px solid lightgray",
+                  display: "flex",
+                  justifyContent: "center",
                   borderRadius: "4px", // Optional: for rounded corners
-                  padding: "16px", // Optional: for some spacing around the Page
+                  // padding: "10px", // Optional: for some spacing around the Page
                   backgroundColor: "white", // Ensure the background is white if you want a consistent look
                 }}
               >
