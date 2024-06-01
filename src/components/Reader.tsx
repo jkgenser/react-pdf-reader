@@ -1,13 +1,10 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Document, Page } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useDebouncedCallback } from "use-debounce";
 import { PageChangeEvent } from "../types";
-import {
-  PDFDocumentProxy,
-  PDFPageProxy,
-  PageViewport,
-} from "pdfjs-dist/types/src/display/api";
+import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
+import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
 // rotate... hook?
 // jumptopage...  hook?
@@ -15,7 +12,7 @@ import {
 // need to resize document to an appropriate amount when loading it in?
 
 const EXTRA_HEIGHT = 30;
-const EXTRA_WIDTH = 10;
+// const EXTRA_WIDTH = 10;
 
 const Reader = ({
   file,
@@ -111,7 +108,6 @@ const Reader = ({
             <div
               key={virtualItem.key}
               data-index={virtualItem.index}
-              // ref={virtualizer.measureElement}
               style={{
                 position: "absolute",
                 top: 0,

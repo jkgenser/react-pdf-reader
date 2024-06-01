@@ -10,7 +10,8 @@ import { PageChangeEvent } from "./types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-const file = "./test-pdf.pdf";
+// const file = "./test-pdf.pdf";
+const file = "./pdf-open-parameters.pdf";
 
 // Change zoom
 // Set default scale based on the container it's in
