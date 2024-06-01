@@ -2,6 +2,11 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useDebouncedCallback } from "use-debounce";
+import { PageChangeEvent } from "../types";
+import {
+  PDFDocumentProxy,
+  PDFPageProxy,
+} from "pdfjs-dist/types/src/display/api";
 
 // consider using useCallBack to not re-render pages?
 // https://chatgpt.com/c/0fd80b49-412c-4399-ace3-56f1a8e00754
@@ -13,14 +18,21 @@ import { useDebouncedCallback } from "use-debounce";
 // on page changed
 // also consider a version that doesn't use tanstack?
 
-const Reader = ({ file }: { file: string }) => {
+const Reader = ({
+  file,
+  onPageChange,
+}: {
+  file: string;
+  onPageChange?: (e: PageChangeEvent) => void;
+}) => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageHeights, setPageHeights] = useState<Array<number>>([]);
-
   const parentRef = useRef<HTMLDivElement>(null);
+  const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
+  const onDocumentLoadSuccess = (pdf: PDFDocumentProxy) => {
+    setPdf(pdf);
+    setNumPages(pdf.numPages);
   };
 
   const virtualizer = useVirtualizer({
@@ -34,6 +46,7 @@ const Reader = ({ file }: { file: string }) => {
 
     overscan: 1,
   });
+  const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || 0;
 
   const handleScroll = useDebouncedCallback(() => {
     if (!parentRef.current) return;
@@ -68,9 +81,10 @@ const Reader = ({ file }: { file: string }) => {
     })();
   }, [file]);
 
-  const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || 0;
-  console.log("currentPage", currentPage);
-  console.log("pageHeights", pageHeights);
+  useEffect(() => {
+    onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
+    console.log("currentPage", currentPage);
+  }, [currentPage]);
 
   return (
     <div
@@ -93,7 +107,7 @@ const Reader = ({ file }: { file: string }) => {
             <div
               key={virtualItem.key}
               data-index={virtualItem.index}
-              ref={virtualizer.measureElement}
+              // ref={virtualizer.measureElement}
               style={{
                 position: "absolute",
                 top: 0,
@@ -103,9 +117,9 @@ const Reader = ({ file }: { file: string }) => {
                 transform: `translateY(${virtualItem.start}px)`,
               }}
             >
-              <>
+              <div>
                 <Page pageNumber={virtualItem.index + 1} />
-              </>
+              </div>
             </div>
           ))}
         </div>
