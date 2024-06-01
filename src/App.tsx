@@ -65,7 +65,7 @@ function App() {
       </div>
       <div
         style={{
-          width: "700px",
+          width: "800px",
           height: "500px",
           borderColor: "gray",
           borderWidth: "1px",
@@ -75,7 +75,7 @@ function App() {
         <Reader
           file={file}
           onPageChange={onPageChange}
-          scale={scale || 0}
+          // scale={scale || 0}
           rotation={rotation || 0}
         />
       </div>
