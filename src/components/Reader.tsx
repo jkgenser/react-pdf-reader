@@ -44,9 +44,9 @@ const Reader = ({
       [pageHeights]
     ),
 
-    overscan: 1,
+    overscan: 0, // may or may not need overscan
   });
-  const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || 0;
+  const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || -1;
 
   const handleScroll = useDebouncedCallback(() => {
     if (!parentRef.current) return;
