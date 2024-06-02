@@ -15,6 +15,7 @@ function App() {
   const [scale, setScale] = useState<number | null>(0.75);
   const [rotation, setRotation] = useState<number>(0);
   const [file, setFile] = useState<string>("pdf-open-parameters.pdf");
+  // const [pageIndex, setPageIndex] = useState<number>(0);
 
   const onPageChange = (e: PageChangeEvent) => {
     setPageNum(e.currentPage);

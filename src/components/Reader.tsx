@@ -109,37 +109,45 @@ const Reader = ({
     onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
   }, [currentPage, pdf, onPageChange]);
 
+  // todo:
+  const handleJump = () => {
+    virtualizer.scrollToIndex(6, { align: "start", behavior: "smooth" });
+  };
+
   return (
-    <div
-      id="reader-parent"
-      ref={parentRef}
-      style={{
-        height: "100%",
-        overflow: "auto",
-        width: "100%",
-      }}
-    >
-      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-        <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {virtualizer.getVirtualItems().map((virtualItem) => (
-            <Page
-              key={virtualItem.key}
-              virtualItem={virtualItem}
-              viewports={viewports}
-              scale={scale}
-              rotation={rotation}
-              pageObserver={pageObserver}
-            />
-          ))}
-        </div>
-      </Document>
-    </div>
+    <>
+      <div
+        id="reader-parent"
+        ref={parentRef}
+        style={{
+          height: "100%",
+          overflow: "auto",
+          width: "100%",
+        }}
+      >
+        <button onClick={handleJump}>jump</button>
+        <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualItem) => (
+              <Page
+                key={virtualItem.key}
+                virtualItem={virtualItem}
+                viewports={viewports}
+                scale={scale}
+                rotation={rotation}
+                pageObserver={pageObserver}
+              />
+            ))}
+          </div>
+        </Document>
+      </div>
+    </>
   );
 };
 

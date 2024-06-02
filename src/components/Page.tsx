@@ -21,8 +21,6 @@ const Page = ({
   const pageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // console.log("pageObserver", pageObserver);
-
     pageObserver && pageRef.current && pageObserver.observe(pageRef.current);
   }, [pageObserver]);
 
