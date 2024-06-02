@@ -60,6 +60,7 @@ const Reader = ({
   const { pageObserver } = usePageObserver({
     parentRef,
     setCurrentPage,
+    numPages,
   });
 
   useEffect(() => {
@@ -116,6 +117,7 @@ const Reader = ({
 
   return (
     <div
+      id="reader-parent"
       ref={parentRef}
       style={{
         height: "100%",

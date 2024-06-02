@@ -22,9 +22,8 @@ const Page = ({
 
   useEffect(() => {
     // console.log("pageObserver", pageObserver);
-    if (!pageRef.current || !pageObserver) return;
 
-    pageObserver.observe(pageRef.current);
+    pageObserver && pageRef.current && pageObserver.observe(pageRef.current);
   }, [pageObserver]);
 
   return (
@@ -43,6 +42,7 @@ const Page = ({
         justifyContent: "center",
       }}
     >
+      {virtualItem.index}
       <div
         id="page-wrapper"
         style={{
