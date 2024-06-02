@@ -104,11 +104,8 @@ const Reader = ({
     virtualizer.measure();
   }, [virtualizer, viewports]);
 
-  // TODO:  figure out a better "on page change" functionality
   useEffect(() => {
     if (!currentPage) return;
-    // if (!virtualizer)
-    // const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || -1;
     onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
   }, [currentPage, pdf, onPageChange]);
 
