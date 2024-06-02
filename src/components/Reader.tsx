@@ -8,7 +8,7 @@ import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
 const EXTRA_HEIGHT = 30;
 const RESERVE_WIDTH = 50; // used when calculating default scale
-// const EXTRA_WIDTH = 10;
+const EXTRA_WIDTH = 10;
 
 const determineScale = (parentElement: HTMLElement, width: number): number => {
   const scaleWidth = (parentElement.clientWidth - RESERVE_WIDTH) / width;
@@ -154,7 +154,9 @@ const Reader = ({
                 style={{
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                   border: "1px solid lightgray",
-                  width: `${viewports[virtualItem.index].width + 15}px`,
+                  width: `${
+                    viewports[virtualItem.index].width + EXTRA_WIDTH
+                  }px`,
                   borderRadius: "4px",
                   padding: "0px",
                   margin: "5px",
