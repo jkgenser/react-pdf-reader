@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Document, Page } from "react-pdf";
+import { Document } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useDebouncedCallback } from "use-debounce";
+// import { useDebouncedCallback } from "use-debounce";
 import { PageChangeEvent } from "../types";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
+import usePageVisibility from "../hooks/usePageVisibility";
+import Page from "./Page";
 
 const EXTRA_HEIGHT = 30;
 const RESERVE_WIDTH = 50; // used when calculating default scale
@@ -14,6 +16,8 @@ const determineScale = (parentElement: HTMLElement, width: number): number => {
   const scaleWidth = (parentElement.clientWidth - RESERVE_WIDTH) / width;
   return scaleWidth;
 };
+
+//
 
 const Reader = ({
   file,
@@ -51,24 +55,6 @@ const Reader = ({
     estimateSize: estimateSize,
     overscan: 0,
   });
-
-  const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || -1;
-
-  const handleScroll = useDebouncedCallback(() => {
-    if (!parentRef.current) return;
-    virtualizer.scrollToOffset(parentRef.current.scrollTop);
-  }, 400);
-
-  useEffect(() => {
-    const scrollElement = parentRef.current;
-    if (!scrollElement) return;
-    scrollElement.addEventListener("scroll", handleScroll);
-    return () => {
-      if (scrollElement) {
-        scrollElement.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [handleScroll]);
 
   useEffect(() => {
     const calculateViewports = async () => {
@@ -113,8 +99,13 @@ const Reader = ({
 
   // TODO:  figure out a better "on page change" functionality
   useEffect(() => {
-    onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
-  }, [currentPage, pdf, onPageChange]);
+    // if (!virtualizer)
+    // const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || -1;
+    // onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
+  }, [virtualizer, pdf, onPageChange]);
+
+  console.log("scrolloffset", virtualizer.scrollOffset);
+  console.log("virtualizer", virtualizer);
 
   return (
     <div
@@ -134,44 +125,12 @@ const Reader = ({
           }}
         >
           {virtualizer.getVirtualItems().map((virtualItem) => (
-            <div
-              id="page-wrapper-wrapper"
-              key={virtualItem.key}
-              data-index={virtualItem.index}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: `${virtualItem.size}px`,
-                transform: `translateY(${virtualItem.start}px)`,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                id="page-wrapper"
-                style={{
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  border: "1px solid lightgray",
-                  width: `${
-                    viewports[virtualItem.index].width + EXTRA_WIDTH
-                  }px`,
-                  borderRadius: "4px",
-                  padding: "0px",
-                  margin: "5px",
-                  backgroundColor: "white",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Page
-                  pageNumber={virtualItem.index + 1}
-                  scale={scale}
-                  rotate={rotation}
-                />
-              </div>
-            </div>
+            <Page
+              virtualItem={virtualItem}
+              viewports={viewports}
+              scale={scale}
+              rotation={rotation}
+            />
           ))}
         </div>
       </Document>

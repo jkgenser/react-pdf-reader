@@ -1,6 +1,6 @@
 import {
   PDFDocumentProxy,
-  PDFPageProxy,
+  // PDFPageProxy,
 } from "pdfjs-dist/types/src/display/api";
 
 export interface PageChangeEvent {
