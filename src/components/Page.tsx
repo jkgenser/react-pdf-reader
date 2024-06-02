@@ -1,25 +1,36 @@
 import { VirtualItem } from "@tanstack/react-virtual";
 import { Page as ReactPdfPage } from "react-pdf";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
+import { useEffect, useRef } from "react";
 
 const EXTRA_WIDTH = 10;
 
 const Page = ({
   virtualItem,
   viewports,
-
   scale,
   rotation,
+  pageObserver,
 }: {
   virtualItem: VirtualItem;
   viewports: Array<PageViewport>;
   scale: number | undefined;
   rotation: number;
+  pageObserver: IntersectionObserver | undefined;
 }) => {
+  const pageRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // console.log("pageObserver", pageObserver);
+    if (!pageRef.current || !pageObserver) return;
+
+    pageObserver.observe(pageRef.current);
+  }, [pageObserver]);
+
   return (
     <div
+      ref={pageRef}
       id="page-wrapper-wrapper"
-      key={virtualItem.key}
       data-index={virtualItem.index}
       style={{
         position: "absolute",

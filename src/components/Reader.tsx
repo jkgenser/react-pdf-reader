@@ -5,12 +5,12 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { PageChangeEvent } from "../types";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
-import usePageVisibility from "../hooks/usePageVisibility";
+
 import Page from "./Page";
+import usePageObserver from "../hooks/usePageObserver";
 
 const EXTRA_HEIGHT = 30;
 const RESERVE_WIDTH = 50; // used when calculating default scale
-const EXTRA_WIDTH = 10;
 
 const determineScale = (parentElement: HTMLElement, width: number): number => {
   const scaleWidth = (parentElement.clientWidth - RESERVE_WIDTH) / width;
@@ -30,11 +30,12 @@ const Reader = ({
   rotation?: number;
   onPageChange?: (e: PageChangeEvent) => void;
 }) => {
-  const parentRef = useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLDivElement | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [viewports, setPageViewports] = useState<Array<PageViewport>>([]);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [scale, setScale] = useState<number | undefined>(initialScale);
+  const [currentPage, setCurrentPage] = useState<number | null>(null);
 
   const onDocumentLoadSuccess = async (newPdf: PDFDocumentProxy) => {
     setPdf(newPdf);
@@ -54,6 +55,11 @@ const Reader = ({
     getScrollElement: () => parentRef.current,
     estimateSize: estimateSize,
     overscan: 0,
+  });
+
+  const { pageObserver } = usePageObserver({
+    parentRef,
+    setCurrentPage,
   });
 
   useEffect(() => {
@@ -95,17 +101,18 @@ const Reader = ({
 
   useEffect(() => {
     virtualizer.measure();
-  }, [virtualizer, pdf, scale, viewports]);
+  }, [virtualizer, viewports]);
 
   // TODO:  figure out a better "on page change" functionality
   useEffect(() => {
+    if (!currentPage) return;
     // if (!virtualizer)
     // const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || -1;
-    // onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
-  }, [virtualizer, pdf, onPageChange]);
+    onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
+  }, [currentPage, pdf, onPageChange]);
 
-  console.log("scrolloffset", virtualizer.scrollOffset);
-  console.log("virtualizer", virtualizer);
+  // console.log("scrolloffset", virtualizer.scrollOffset);
+  // console.log("virtualizer", virtualizer);
 
   return (
     <div
@@ -126,10 +133,12 @@ const Reader = ({
         >
           {virtualizer.getVirtualItems().map((virtualItem) => (
             <Page
+              key={virtualItem.key}
               virtualItem={virtualItem}
               viewports={viewports}
               scale={scale}
               rotation={rotation}
+              pageObserver={pageObserver}
             />
           ))}
         </div>
