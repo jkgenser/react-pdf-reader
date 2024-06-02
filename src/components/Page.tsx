@@ -42,7 +42,7 @@ const Page = ({
         justifyContent: "center",
       }}
     >
-      {virtualItem.index}
+      {/* {virtualItem.index + 1} */}
       <div
         id="page-wrapper"
         style={{

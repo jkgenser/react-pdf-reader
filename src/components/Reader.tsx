@@ -31,7 +31,7 @@ const Reader = ({
   onPageChange?: (e: PageChangeEvent) => void;
 }) => {
   const parentRef = useRef<HTMLDivElement | null>(null);
-  const [numPages, setNumPages] = useState<number | null>(null);
+  const [numPages, setNumPages] = useState<number>(0);
   const [viewports, setPageViewports] = useState<Array<PageViewport>>([]);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [scale, setScale] = useState<number | undefined>(initialScale);
@@ -111,9 +111,6 @@ const Reader = ({
     // const currentPage = virtualizer.getVirtualItems()[0]?.index + 1 || -1;
     onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
   }, [currentPage, pdf, onPageChange]);
-
-  // console.log("scrolloffset", virtualizer.scrollOffset);
-  // console.log("virtualizer", virtualizer);
 
   return (
     <div

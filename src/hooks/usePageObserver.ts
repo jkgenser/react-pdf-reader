@@ -16,14 +16,24 @@ const usePageObserver = ({
   parentRef: MutableRefObject<HTMLDivElement | null>;
   numPages: number;
 }) => {
-  const defaultVisibilities = useMemo(() => {
-    console.log(numPages);
-    return Array(numPages).fill(-1) as number[];
+  const [visibilities, setVisibilities] = useState<number[]>(() =>
+    Array(numPages).fill(-1)
+  );
+
+  useEffect(() => {
+    if (!numPages) return;
+
+    setVisibilities(Array(numPages).fill(-1));
   }, [numPages]);
 
-  console.log("defaultVisibilities", defaultVisibilities);
-  const [visibilities, setVisibilities] = useState(defaultVisibilities);
-  console.log("visibilities", visibilities);
+  useEffect(() => {
+    // Update currentPage based on visibility
+    const maxVisibilityIndex = visibilities.indexOf(Math.max(...visibilities));
+
+    if (maxVisibilityIndex !== -1) {
+      setCurrentPage(maxVisibilityIndex + 1); // Pages are 1-indexed
+    }
+  }, [visibilities, setCurrentPage]);
 
   const pageObserver = useMemo(() => {
     const io = new IntersectionObserver(
@@ -51,7 +61,7 @@ const usePageObserver = ({
       }
     );
     return io;
-  }, []);
+  }, [parentRef, numPages]);
 
   // cleanup
   useEffect(() => {

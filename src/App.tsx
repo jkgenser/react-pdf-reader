@@ -60,6 +60,7 @@ function App() {
               pdf-open-parameters.pdf
             </option>
             <option value="test-pdf.pdf">test-pdf.pdf</option>
+            <option value="rai.pdf">rai.pdf</option>
           </select>
         </div>
       </div>
