@@ -111,7 +111,7 @@ const Reader = ({
 
   // todo:
   const handleJump = () => {
-    virtualizer.scrollToIndex(6, { align: "start", behavior: "smooth" });
+    virtualizer.scrollToIndex(500, { align: "start", behavior: "auto" });
   };
 
   return (
