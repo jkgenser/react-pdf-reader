@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Document } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
-// import { useDebouncedCallback } from "use-debounce";
 import { PageChangeEvent } from "../types";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
@@ -16,8 +15,6 @@ const determineScale = (parentElement: HTMLElement, width: number): number => {
   const scaleWidth = (parentElement.clientWidth - RESERVE_WIDTH) / width;
   return scaleWidth;
 };
-
-//
 
 const Reader = ({
   file,
