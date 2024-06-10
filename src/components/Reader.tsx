@@ -120,9 +120,8 @@ const Reader = forwardRef<ReaderRef, ReaderProps>(
     useImperativeHandle(
       ref,
       () => ({
-        jumpToPage: (pageIndex: number) => {
-          console.log("jumpting to", pageIndex);
-          virtualizer.scrollToIndex(pageIndex, {
+        jumpToPage: (pageNumber: number) => {
+          virtualizer.scrollToIndex(pageNumber - 1, {
             align: "start",
             behavior: "auto",
           });

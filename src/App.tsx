@@ -74,7 +74,7 @@ function App() {
         <button
           onClick={() => {
             readerRef.current &&
-              wantPage &&
+              wantPage !== null &&
               readerRef.current.jumpToPage(wantPage);
           }}
         >
