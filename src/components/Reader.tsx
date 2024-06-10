@@ -1,4 +1,11 @@
-import { useState, useRef, useEffect, useCallback, forwardRef } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { Document } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { PageChangeEvent } from "../types";
@@ -23,8 +30,11 @@ interface ReaderProps {
   onPageChange?: (e: PageChangeEvent) => void;
 }
 
-const Reader = forwardRef<HTMLDivElement, ReaderProps>(
-  ({ file, initialScale, rotation, onPageChange }, ref) => {
+export interface ReaderRef {
+  jumpToPage: (pageIndex: number) => void;
+}
+const Reader = forwardRef<ReaderRef, ReaderProps>(
+  ({ file, initialScale, rotation = 0, onPageChange }, ref) => {
     const parentRef = useRef<HTMLDivElement | null>(null);
     const [numPages, setNumPages] = useState<number>(0);
     const [viewports, setPageViewports] = useState<Array<PageViewport>>([]);
@@ -106,6 +116,20 @@ const Reader = forwardRef<HTMLDivElement, ReaderProps>(
       if (!currentPage) return;
       onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
     }, [currentPage, pdf, onPageChange]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        jumpToPage: (pageIndex: number) => {
+          console.log("jumpting to", pageIndex);
+          virtualizer.scrollToIndex(pageIndex, {
+            align: "start",
+            behavior: "auto",
+          });
+        },
+      }),
+      []
+    );
 
     // todo:
     // const handleJump = () => {
