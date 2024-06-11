@@ -56,4 +56,6 @@ export interface ReaderPageProps {
   rotation: number;
   pageObserver: IntersectionObserver | undefined;
   isScrollingFast: boolean;
+  renderPage?: RenderPage;
+  doc: PDFDocumentProxy;
 }

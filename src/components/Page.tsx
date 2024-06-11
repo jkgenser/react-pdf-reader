@@ -1,22 +1,36 @@
 import { Page as ReactPdfPage } from "react-pdf";
 import { useEffect, useRef } from "react";
-import { ReaderPageProps } from "../types";
+import { ReaderPageProps, RenderPage, RenderPageProps } from "../types";
 
 const EXTRA_WIDTH = 10;
 
 const Page = ({
   virtualItem,
   viewports,
-  scale,
+  scale = 1,
   rotation,
   pageObserver,
   isScrollingFast,
+  renderPage,
+  doc,
 }: ReaderPageProps) => {
   const pageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     pageObserver && pageRef.current && pageObserver.observe(pageRef.current);
   }, [pageObserver]);
+
+  const defaultPageRenderer: RenderPage = (props: RenderPageProps) => {
+    return (
+      <ReactPdfPage
+        pageNumber={props.pageIndex + 1}
+        scale={props.scale}
+        rotate={props.rotation}
+      />
+    );
+  };
+
+  const renderPageLayer = renderPage || defaultPageRenderer;
 
   return (
     <div
@@ -48,13 +62,20 @@ const Page = ({
           justifyContent: "center",
         }}
       >
-        {!isScrollingFast && (
+        {/* {!isScrollingFast && (
           <ReactPdfPage
             pageNumber={virtualItem.index + 1}
             scale={scale}
             rotate={rotation}
           />
-        )}
+        )} */}
+        {!isScrollingFast &&
+          renderPageLayer({
+            pageIndex: virtualItem.index,
+            scale,
+            rotation,
+            doc,
+          })}
       </div>
     </div>
   );

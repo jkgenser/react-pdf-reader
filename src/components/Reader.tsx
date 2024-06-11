@@ -142,17 +142,25 @@ const Reader = ({
             position: "relative",
           }}
         >
-          {virtualizer.getVirtualItems().map((virtualItem) => (
-            <Page
-              key={virtualItem.key}
-              virtualItem={virtualItem}
-              viewports={viewports}
-              scale={scale}
-              rotation={rotation}
-              pageObserver={pageObserver}
-              isScrollingFast={isScrollingFast}
-            />
-          ))}
+          {pdf ? (
+            virtualizer
+              .getVirtualItems()
+              .map((virtualItem) => (
+                <Page
+                  key={virtualItem.key}
+                  virtualItem={virtualItem}
+                  viewports={viewports}
+                  scale={scale}
+                  rotation={rotation}
+                  pageObserver={pageObserver}
+                  isScrollingFast={isScrollingFast}
+                  renderPage={renderPage}
+                  doc={pdf}
+                />
+              ))
+          ) : (
+            <div />
+          )}
         </div>
       </Document>
     </div>
