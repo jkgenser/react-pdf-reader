@@ -7,6 +7,7 @@ import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
 import Page from "./Page";
 import usePageObserver from "../hooks/usePageObserver";
+import useVirtualizerVelocity from "../hooks/useVirtualizerVelocity";
 
 const EXTRA_HEIGHT = 30;
 const RESERVE_WIDTH = 50; // used when calculating default scale
@@ -117,6 +118,7 @@ const Reader = ({
 
   useEffect(() => {
     if (!setReaderAPI) return;
+
     setReaderAPI({
       jumpToPage: (pageIndex: number) => {
         virtualizer.scrollToIndex(pageIndex - 1, {
@@ -125,23 +127,13 @@ const Reader = ({
         });
       },
     });
-  }, [setReaderAPI, virtualizer]);
+  }, [viewports]);
 
-  // const api = useMemo(() => ({
-  //   jumpTo: (pageNumber: number) => {
-  //     virtualizer.scrollToIndex(pageNumber - 1, {
-  //       align: "start",
-  //       behavior: "smooth",
-  //     });
-  //   },
-  //   rotate: ()
-  // }))
-
-  // useEffect(() => {
-  //   if (!virtualizer) return;
-  //   onVirtualizerInit && onVirtualizerInit(virtualizer);
-  // }, [virtualizer]);
-  console.log("isScrolling", virtualizer.isScrolling);
+  const { normalizedVelocity } = useVirtualizerVelocity({
+    virtualizer,
+    estimateSize,
+  });
+  const isScrollingFast = Math.abs(normalizedVelocity) > 10;
 
   return (
     <div
@@ -169,6 +161,7 @@ const Reader = ({
               scale={scale}
               rotation={rotation}
               pageObserver={pageObserver}
+              isScrollingFast={isScrollingFast}
             />
           ))}
         </div>

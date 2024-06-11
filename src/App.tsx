@@ -18,8 +18,6 @@ function App() {
   const [wantPage, setWantPage] = useState<number | null>(null);
   const [readerAPI, setReaderAPI] = useState<ReaderAPI | null>(null);
 
-  // const [pageIndex, setPageIndex] = useState<number>(0);
-
   const onPageChange = (e: PageChangeEvent) => {
     setPageNum(e.currentPage);
   };
