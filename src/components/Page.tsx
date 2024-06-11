@@ -32,6 +32,9 @@ const Page = ({
 
   const renderPageLayer = renderPage || defaultPageRenderer;
 
+  const height = viewports[virtualItem.index].height;
+  const width = viewports[virtualItem.index].width;
+
   return (
     <div
       ref={pageRef}
@@ -75,6 +78,8 @@ const Page = ({
             scale,
             rotation,
             doc,
+            height,
+            width,
           })}
       </div>
     </div>

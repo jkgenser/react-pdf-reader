@@ -30,21 +30,12 @@ export interface HighlightArea {
 }
 
 export interface RenderPageProps {
-  // annotationLayer: Slot;
-  // canvasLayer: Slot;
-  // Is the canvas layer rendered completely?
-  // canvasLayerRendered: boolean;
   doc: PDFDocumentProxy;
   height: number;
   pageIndex: number;
   rotation: number;
   scale: number;
-  // svgLayer: Slot;
-  // textLayer: Slot;
-  // Is the text layer rendered completely?
-  textLayerRendered: boolean;
   width: number;
-  // Mark as the page rendered completely
 }
 
 export type RenderPage = (props: RenderPageProps) => React.ReactNode;
