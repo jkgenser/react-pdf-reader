@@ -1,6 +1,7 @@
 import { VirtualItem } from "@tanstack/react-virtual";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
+import { PageProps } from "react-pdf";
 
 export interface PageChangeEvent {
   currentPage: number;
@@ -30,7 +31,6 @@ export interface HighlightArea {
 }
 
 export interface RenderPageProps {
-  doc: PDFDocumentProxy;
   height: number;
   pageIndex: number;
   rotation: number;
@@ -38,7 +38,7 @@ export interface RenderPageProps {
   width: number;
 }
 
-export type RenderPage = (props: RenderPageProps) => React.ReactNode;
+export type RenderPage = (props: PageProps) => React.ReactNode;
 
 export interface ReaderPageProps {
   virtualItem: VirtualItem;
@@ -46,7 +46,6 @@ export interface ReaderPageProps {
   scale: number | undefined;
   rotation: number;
   pageObserver: IntersectionObserver | undefined;
-  isScrollingFast: boolean;
+  shouldRender: boolean;
   renderPage?: RenderPage;
-  doc: PDFDocumentProxy;
 }

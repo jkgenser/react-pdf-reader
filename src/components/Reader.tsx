@@ -123,6 +123,7 @@ const Reader = ({
     estimateSize,
   });
   const isScrollingFast = Math.abs(normalizedVelocity) > 1;
+  const shouldRender = !isScrollingFast;
 
   return (
     <div
@@ -153,9 +154,8 @@ const Reader = ({
                   scale={scale}
                   rotation={rotation}
                   pageObserver={pageObserver}
-                  isScrollingFast={isScrollingFast}
+                  shouldRender={shouldRender}
                   renderPage={renderPage}
-                  doc={pdf}
                 />
               ))
           ) : (

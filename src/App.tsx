@@ -3,10 +3,11 @@ import "./App.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
-import { pdfjs } from "react-pdf";
+import { PageProps, pdfjs } from "react-pdf";
 import Reader from "./components/Reader";
 import { ChangeEvent, useState } from "react";
 import { PageChangeEvent, ReaderAPI } from "./types";
+import { Page } from "react-pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -39,6 +40,9 @@ function App() {
     setWantPage(isNaN(value) ? null : value);
   };
 
+  const renderPage = (props: PageProps) => {
+    return <Page {...props} />;
+  };
   return (
     <div style={{ display: "flex" }}>
       <div
@@ -91,7 +95,7 @@ function App() {
       <div
         style={{
           width: "800px",
-          height: "500px",
+          height: "800px",
           borderColor: "gray",
           borderWidth: "1px",
           borderStyle: "solid",
@@ -103,6 +107,7 @@ function App() {
           initialScale={scale || undefined}
           rotation={rotation || 0}
           setReaderAPI={(api: ReaderAPI) => setReaderAPI(api)}
+          renderPage={renderPage}
         />
       </div>
     </div>
