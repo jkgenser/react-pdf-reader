@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Document } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { PageChangeEvent } from "../types";
+import { ReaderProps } from "../types";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
@@ -10,25 +10,12 @@ import usePageObserver from "../hooks/usePageObserver";
 import useVirtualizerVelocity from "../hooks/useVirtualizerVelocity";
 
 const EXTRA_HEIGHT = 30;
-const RESERVE_WIDTH = 50; // used when calculating default scale
+const RESERVE_WIDTH = 50;
 
 const determineScale = (parentElement: HTMLElement, width: number): number => {
   const scaleWidth = (parentElement.clientWidth - RESERVE_WIDTH) / width;
   return scaleWidth;
 };
-
-export interface ReaderProps {
-  file: string;
-  initialScale?: number;
-  rotation?: number;
-  onPageChange?: (e: PageChangeEvent) => void;
-  setReaderAPI?: (readerAPI: ReaderAPI) => void;
-}
-
-// parent component should set this in state
-export interface ReaderAPI {
-  jumpToPage: (pageIndex: number) => void;
-}
 
 const Reader = ({
   file,
@@ -36,6 +23,7 @@ const Reader = ({
   rotation = 0,
   onPageChange,
   setReaderAPI,
+  renderPage,
 }: ReaderProps) => {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [numPages, setNumPages] = useState<number>(0);
@@ -127,13 +115,14 @@ const Reader = ({
         });
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewports]);
 
   const { normalizedVelocity } = useVirtualizerVelocity({
     virtualizer,
     estimateSize,
   });
-  const isScrollingFast = Math.abs(normalizedVelocity) > 10;
+  const isScrollingFast = Math.abs(normalizedVelocity) > 1;
 
   return (
     <div

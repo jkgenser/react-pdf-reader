@@ -32,7 +32,7 @@ const useVirtualizerVelocity = ({
 
       // Optionally, log the velocity
       //   console.log("Scroll offset velocity:", newVelocity);
-    }, 100); // Adjust the interval for more/less frequent checks
+    }, 50); // Adjust the interval for more/less frequent checks
 
     // Clear the interval on component unmount
     return () => clearInterval(interval);

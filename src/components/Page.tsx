@@ -1,7 +1,6 @@
-import { VirtualItem } from "@tanstack/react-virtual";
 import { Page as ReactPdfPage } from "react-pdf";
-import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 import { useEffect, useRef } from "react";
+import { ReaderPageProps } from "../types";
 
 const EXTRA_WIDTH = 10;
 
@@ -12,14 +11,7 @@ const Page = ({
   rotation,
   pageObserver,
   isScrollingFast,
-}: {
-  virtualItem: VirtualItem;
-  viewports: Array<PageViewport>;
-  scale: number | undefined;
-  rotation: number;
-  pageObserver: IntersectionObserver | undefined;
-  isScrollingFast: boolean;
-}) => {
+}: ReaderPageProps) => {
   const pageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
