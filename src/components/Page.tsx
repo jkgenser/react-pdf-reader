@@ -24,6 +24,9 @@ const Page = ({
     pageObserver && pageRef.current && pageObserver.observe(pageRef.current);
   }, [pageObserver]);
 
+  // should render determine based on scroll speed
+  // calculate scroll speed above based on the virtualizer
+  const shouldRender = true;
   return (
     <div
       ref={pageRef}
@@ -40,7 +43,6 @@ const Page = ({
         justifyContent: "center",
       }}
     >
-      {/* {virtualItem.index + 1} */}
       <div
         id="page-wrapper"
         style={{
@@ -55,11 +57,13 @@ const Page = ({
           justifyContent: "center",
         }}
       >
-        <ReactPdfPage
-          pageNumber={virtualItem.index + 1}
-          scale={scale}
-          rotate={rotation}
-        />
+        {shouldRender && (
+          <ReactPdfPage
+            pageNumber={virtualItem.index + 1}
+            scale={scale}
+            rotate={rotation}
+          />
+        )}
       </div>
     </div>
   );

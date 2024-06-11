@@ -30,6 +30,11 @@ interface ReaderProps {
   onPageChange?: (e: PageChangeEvent) => void;
 }
 
+// parent component should set this in state
+export interface ReaderAPI {
+  jumpToPage: (pageIndex: number) => void;
+}
+
 export interface ReaderRef {
   jumpToPage: (pageIndex: number) => void;
 }
@@ -123,17 +128,28 @@ const Reader = forwardRef<ReaderRef, ReaderProps>(
         jumpToPage: (pageNumber: number) => {
           virtualizer.scrollToIndex(pageNumber - 1, {
             align: "start",
-            behavior: "auto",
+            behavior: "smooth",
           });
         },
       }),
-      []
+      [virtualizer]
     );
 
-    // todo:
-    // const handleJump = () => {
-    //   virtualizer.scrollToIndex(500, { align: "start", behavior: "auto" });
-    // };
+    // const api = useMemo(() => ({
+    //   jumpTo: (pageNumber: number) => {
+    //     virtualizer.scrollToIndex(pageNumber - 1, {
+    //       align: "start",
+    //       behavior: "smooth",
+    //     });
+    //   },
+    //   rotate: ()
+    // }))
+
+    // useEffect(() => {
+    //   if (!virtualizer) return;
+    //   onVirtualizerInit && onVirtualizerInit(virtualizer);
+    // }, [virtualizer]);
+    console.log("isScrolling", virtualizer.isScrolling);
 
     return (
       <div

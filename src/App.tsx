@@ -101,6 +101,7 @@ function App() {
           onPageChange={onPageChange}
           initialScale={scale || undefined}
           rotation={rotation || 0}
+          // onApiInit={(api) => setVirtulize(value)}
         />
       </div>
     </>
