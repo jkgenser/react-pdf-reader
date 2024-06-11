@@ -23,7 +23,7 @@ const determineScale = (parentElement: HTMLElement, width: number): number => {
   return scaleWidth;
 };
 
-interface ReaderProps {
+export interface ReaderProps {
   file: string;
   initialScale?: number;
   rotation?: number;
@@ -38,152 +38,151 @@ export interface ReaderAPI {
 export interface ReaderRef {
   jumpToPage: (pageIndex: number) => void;
 }
-const Reader = forwardRef<ReaderRef, ReaderProps>(
-  ({ file, initialScale, rotation = 0, onPageChange }, ref) => {
-    const parentRef = useRef<HTMLDivElement | null>(null);
-    const [numPages, setNumPages] = useState<number>(0);
-    const [viewports, setPageViewports] = useState<Array<PageViewport>>([]);
-    const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
-    const [scale, setScale] = useState<number | undefined>(initialScale);
-    const [currentPage, setCurrentPage] = useState<number | null>(null);
+const Reader = ({
+  file,
+  initialScale,
+  rotation = 0,
+  onPageChange,
+}: ReaderProps) => {
+  const parentRef = useRef<HTMLDivElement | null>(null);
+  const [numPages, setNumPages] = useState<number>(0);
+  const [viewports, setPageViewports] = useState<Array<PageViewport>>([]);
+  const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
+  const [scale, setScale] = useState<number | undefined>(initialScale);
+  const [currentPage, setCurrentPage] = useState<number | null>(null);
 
-    const onDocumentLoadSuccess = async (newPdf: PDFDocumentProxy) => {
-      setPdf(newPdf);
-      setNumPages(newPdf.numPages);
+  const onDocumentLoadSuccess = async (newPdf: PDFDocumentProxy) => {
+    setPdf(newPdf);
+    setNumPages(newPdf.numPages);
+  };
+
+  const estimateSize = useCallback(
+    (index: number) => {
+      if (!viewports) return 0;
+      return viewports[index].height + EXTRA_HEIGHT;
+    },
+    [viewports]
+  );
+
+  const virtualizer = useVirtualizer({
+    count: numPages || 0,
+    getScrollElement: () => parentRef.current,
+    estimateSize: estimateSize,
+    overscan: 0,
+  });
+
+  const { pageObserver } = usePageObserver({
+    parentRef,
+    setCurrentPage,
+    numPages,
+  });
+
+  useEffect(() => {
+    const calculateViewports = async () => {
+      if (!pdf) return;
+
+      const viewports = await Promise.all(
+        Array.from({ length: pdf.numPages }, async (_, index) => {
+          const page = await pdf.getPage(index + 1);
+          const viewport = page.getViewport({
+            scale: scale as number,
+            rotation,
+          });
+          return viewport;
+        })
+      );
+
+      setPageViewports(viewports);
     };
 
-    const estimateSize = useCallback(
-      (index: number) => {
-        if (!viewports) return 0;
-        return viewports[index].height + EXTRA_HEIGHT;
+    calculateViewports();
+  }, [pdf, scale, rotation]);
+
+  useEffect(() => {
+    if (!pdf) return;
+    if (initialScale) {
+      setScale(initialScale);
+      return;
+    }
+    const fetchPageAndSetScale = async () => {
+      const firstPage = await pdf.getPage(1);
+      const firstViewPort = firstPage.getViewport({ scale: 1, rotation });
+      const newScale = determineScale(parentRef.current!, firstViewPort.width);
+      setScale(newScale);
+    };
+
+    fetchPageAndSetScale();
+  }, [pdf, initialScale, rotation]);
+
+  useEffect(() => {
+    virtualizer.measure();
+  }, [virtualizer, viewports]);
+
+  useEffect(() => {
+    if (!currentPage) return;
+    onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
+  }, [currentPage, pdf, onPageChange]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      jumpToPage: (pageNumber: number) => {
+        virtualizer.scrollToIndex(pageNumber - 1, {
+          align: "start",
+          behavior: "smooth",
+        });
       },
-      [viewports]
-    );
+    }),
+    [virtualizer]
+  );
 
-    const virtualizer = useVirtualizer({
-      count: numPages || 0,
-      getScrollElement: () => parentRef.current,
-      estimateSize: estimateSize,
-      overscan: 0,
-    });
+  // const api = useMemo(() => ({
+  //   jumpTo: (pageNumber: number) => {
+  //     virtualizer.scrollToIndex(pageNumber - 1, {
+  //       align: "start",
+  //       behavior: "smooth",
+  //     });
+  //   },
+  //   rotate: ()
+  // }))
 
-    const { pageObserver } = usePageObserver({
-      parentRef,
-      setCurrentPage,
-      numPages,
-    });
+  // useEffect(() => {
+  //   if (!virtualizer) return;
+  //   onVirtualizerInit && onVirtualizerInit(virtualizer);
+  // }, [virtualizer]);
+  console.log("isScrolling", virtualizer.isScrolling);
 
-    useEffect(() => {
-      const calculateViewports = async () => {
-        if (!pdf) return;
-
-        const viewports = await Promise.all(
-          Array.from({ length: pdf.numPages }, async (_, index) => {
-            const page = await pdf.getPage(index + 1);
-            const viewport = page.getViewport({
-              scale: scale as number,
-              rotation,
-            });
-            return viewport;
-          })
-        );
-
-        setPageViewports(viewports);
-      };
-
-      calculateViewports();
-    }, [pdf, scale, rotation]);
-
-    useEffect(() => {
-      if (!pdf) return;
-      if (initialScale) {
-        setScale(initialScale);
-        return;
-      }
-      const fetchPageAndSetScale = async () => {
-        const firstPage = await pdf.getPage(1);
-        const firstViewPort = firstPage.getViewport({ scale: 1, rotation });
-        const newScale = determineScale(
-          parentRef.current!,
-          firstViewPort.width
-        );
-        setScale(newScale);
-      };
-
-      fetchPageAndSetScale();
-    }, [pdf, initialScale, rotation]);
-
-    useEffect(() => {
-      virtualizer.measure();
-    }, [virtualizer, viewports]);
-
-    useEffect(() => {
-      if (!currentPage) return;
-      onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
-    }, [currentPage, pdf, onPageChange]);
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        jumpToPage: (pageNumber: number) => {
-          virtualizer.scrollToIndex(pageNumber - 1, {
-            align: "start",
-            behavior: "smooth",
-          });
-        },
-      }),
-      [virtualizer]
-    );
-
-    // const api = useMemo(() => ({
-    //   jumpTo: (pageNumber: number) => {
-    //     virtualizer.scrollToIndex(pageNumber - 1, {
-    //       align: "start",
-    //       behavior: "smooth",
-    //     });
-    //   },
-    //   rotate: ()
-    // }))
-
-    // useEffect(() => {
-    //   if (!virtualizer) return;
-    //   onVirtualizerInit && onVirtualizerInit(virtualizer);
-    // }, [virtualizer]);
-    console.log("isScrolling", virtualizer.isScrolling);
-
-    return (
-      <div
-        id="reader-parent"
-        ref={parentRef}
-        style={{
-          height: "100%",
-          overflow: "auto",
-          width: "100%",
-        }}
-      >
-        <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
-          <div
-            style={{
-              height: `${virtualizer.getTotalSize()}px`,
-              width: "100%",
-              position: "relative",
-            }}
-          >
-            {virtualizer.getVirtualItems().map((virtualItem) => (
-              <Page
-                key={virtualItem.key}
-                virtualItem={virtualItem}
-                viewports={viewports}
-                scale={scale}
-                rotation={rotation}
-                pageObserver={pageObserver}
-              />
-            ))}
-          </div>
-        </Document>
-      </div>
-    );
-  }
-);
-
+  return (
+    <div
+      id="reader-parent"
+      ref={parentRef}
+      style={{
+        height: "100%",
+        overflow: "auto",
+        width: "100%",
+      }}
+    >
+      <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+        <div
+          style={{
+            height: `${virtualizer.getTotalSize()}px`,
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          {virtualizer.getVirtualItems().map((virtualItem) => (
+            <Page
+              key={virtualItem.key}
+              virtualItem={virtualItem}
+              viewports={viewports}
+              scale={scale}
+              rotation={rotation}
+              pageObserver={pageObserver}
+            />
+          ))}
+        </div>
+      </Document>
+    </div>
+  );
+};
 export default Reader;
