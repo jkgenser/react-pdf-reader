@@ -1,11 +1,4 @@
-import {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Document } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { PageChangeEvent } from "../types";
@@ -28,6 +21,7 @@ export interface ReaderProps {
   initialScale?: number;
   rotation?: number;
   onPageChange?: (e: PageChangeEvent) => void;
+  setReaderAPI?: (readerAPI: ReaderAPI) => void;
 }
 
 // parent component should set this in state
@@ -35,14 +29,12 @@ export interface ReaderAPI {
   jumpToPage: (pageIndex: number) => void;
 }
 
-export interface ReaderRef {
-  jumpToPage: (pageIndex: number) => void;
-}
 const Reader = ({
   file,
   initialScale,
   rotation = 0,
   onPageChange,
+  setReaderAPI,
 }: ReaderProps) => {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [numPages, setNumPages] = useState<number>(0);
@@ -123,18 +115,17 @@ const Reader = ({
     onPageChange && pdf && onPageChange({ currentPage, doc: pdf });
   }, [currentPage, pdf, onPageChange]);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      jumpToPage: (pageNumber: number) => {
-        virtualizer.scrollToIndex(pageNumber - 1, {
+  useEffect(() => {
+    if (!setReaderAPI) return;
+    setReaderAPI({
+      jumpToPage: (pageIndex: number) => {
+        virtualizer.scrollToIndex(pageIndex - 1, {
           align: "start",
           behavior: "smooth",
         });
       },
-    }),
-    [virtualizer]
-  );
+    });
+  }, [setReaderAPI, virtualizer]);
 
   // const api = useMemo(() => ({
   //   jumpTo: (pageNumber: number) => {
