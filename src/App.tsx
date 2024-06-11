@@ -40,8 +40,13 @@ function App() {
   };
 
   return (
-    <>
-      <div style={{ display: "flex" }}>
+    <div style={{ display: "flex" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <div>Page: {pageNum}</div>
         <div>
           scale
@@ -100,7 +105,7 @@ function App() {
           setReaderAPI={(api: ReaderAPI) => setReaderAPI(api)}
         />
       </div>
-    </>
+    </div>
   );
 }
 
