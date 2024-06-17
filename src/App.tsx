@@ -44,8 +44,9 @@ function App() {
   const renderPage = (props: RenderPageProps) => {
     return (
       <>
-        <Page {...props} />
-        <TestHighlightsLayer {...props} />
+        <Page {...props}>
+          <TestHighlightsLayer {...props} />
+        </Page>
       </>
     );
   };
