@@ -41,6 +41,7 @@ function App() {
   };
 
   const renderPage = (props: PageProps) => {
+    console.log("pageprops", props);
     return <Page {...props} />;
   };
   return (

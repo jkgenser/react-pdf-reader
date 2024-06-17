@@ -1,6 +1,6 @@
-import { PageProps, Page as ReactPdfPage } from "react-pdf";
+import { Page as ReactPdfPage } from "react-pdf";
 import { useEffect, useRef } from "react";
-import { ReaderPageProps, RenderPage } from "../types";
+import { ReaderPageProps, RenderPage, RenderPageProps } from "../types";
 
 const EXTRA_WIDTH = 10;
 
@@ -19,7 +19,7 @@ const Page = ({
     pageObserver && pageRef.current && pageObserver.observe(pageRef.current);
   }, [pageObserver]);
 
-  const defaultPageRenderer: RenderPage = (props: PageProps) => {
+  const defaultPageRenderer: RenderPage = (props: RenderPageProps) => {
     return (
       <ReactPdfPage
         pageIndex={props.pageIndex}
