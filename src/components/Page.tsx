@@ -34,7 +34,7 @@ const Page = ({
   return (
     <div
       ref={pageRef}
-      id="page-wrapper-wrapper"
+      id="page-outer-box"
       data-index={virtualItem.index}
       style={{
         position: "absolute",
@@ -48,7 +48,7 @@ const Page = ({
       }}
     >
       <div
-        id="page-wrapper"
+        id="page-inner-box"
         style={{
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           border: "1px solid lightgray",
@@ -61,12 +61,15 @@ const Page = ({
           justifyContent: "center",
         }}
       >
-        {shouldRender &&
-          renderPageLayer({
-            pageIndex: virtualItem.index,
-            scale,
-            rotate: rotation,
-          })}
+        {shouldRender && (
+          <div className="page-wrapper">
+            {renderPageLayer({
+              pageIndex: virtualItem.index,
+              scale,
+              rotate: rotation,
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
