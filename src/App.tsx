@@ -9,7 +9,7 @@ import { ChangeEvent, useState } from "react";
 import { PageChangeEvent, ReaderAPI, RenderPageProps } from "./types";
 import { Page } from "react-pdf";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 function App() {
   const [pageNum, setPageNum] = useState<number | null>(null);
@@ -41,7 +41,6 @@ function App() {
   };
 
   const renderPage = (props: RenderPageProps) => {
-    console.log("pageprops", props);
     return <Page {...props} />;
   };
 
