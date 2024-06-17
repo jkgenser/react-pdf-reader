@@ -137,6 +137,7 @@ const Reader = ({
     >
       <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
         <div
+          id="pages-container"
           style={{
             height: `${virtualizer.getTotalSize()}px`,
             width: "100%",

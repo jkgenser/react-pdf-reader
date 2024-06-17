@@ -38,13 +38,11 @@ const Page = ({
       data-index={virtualItem.index}
       style={{
         position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
         height: `${virtualItem.size}px`,
         transform: `translateY(${virtualItem.start}px)`,
         display: "flex",
         justifyContent: "center",
+        minWidth: "100%",
       }}
     >
       <div
@@ -52,8 +50,8 @@ const Page = ({
         style={{
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           border: "1px solid lightgray",
-          width: `${viewports[virtualItem.index].width + EXTRA_WIDTH}px`,
           borderRadius: "4px",
+          width: `${viewports[virtualItem.index].width + EXTRA_WIDTH}px`,
           padding: "0px",
           margin: "5px",
           backgroundColor: "white",
