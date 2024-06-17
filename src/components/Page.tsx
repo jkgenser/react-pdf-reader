@@ -62,7 +62,7 @@ const Page = ({
         }}
       >
         {shouldRender && (
-          <div className="page-wrapper">
+          <div className="page-wrapper" style={{ position: "relative" }}>
             {renderPageLayer({
               pageIndex: virtualItem.index,
               scale,
@@ -70,6 +70,12 @@ const Page = ({
             })}
           </div>
         )}
+        {/* {shouldRender &&
+          renderPageLayer({
+            pageIndex: virtualItem.index,
+            scale,
+            rotate: rotation,
+          })} */}
       </div>
     </div>
   );

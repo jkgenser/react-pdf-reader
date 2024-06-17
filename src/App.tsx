@@ -8,6 +8,7 @@ import Reader from "./components/Reader";
 import { ChangeEvent, useState } from "react";
 import { PageChangeEvent, ReaderAPI, RenderPageProps } from "./types";
 import { Page } from "react-pdf";
+import TestHighlightsLayer from "./TestHighlights";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -44,9 +45,7 @@ function App() {
     return (
       <>
         <Page {...props} />
-        <div style={{ position: "absolute", top: "10%", left: "10%" }}>
-          Highlight Layer
-        </div>
+        <TestHighlightsLayer {...props} />
       </>
     );
   };

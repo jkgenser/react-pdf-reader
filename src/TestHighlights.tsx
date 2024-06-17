@@ -1,6 +1,8 @@
+import { RenderPageProps } from "./types";
+
 const highlightData = [
-  { top: 10, left: 10, height: 1, width: 3, pageIndex: 1 },
-  { top: 1, left: 1, height: 1, width: 2, pageIndex: 2 },
+  { top: 14.2, left: 12, height: 2, width: 7.5, pageIndex: 0 },
+  { top: 1, left: 1, height: 1, width: 2, pageIndex: 1 },
 ];
 
 const Highlight = ({
@@ -8,14 +10,17 @@ const Highlight = ({
   left,
   height,
   width,
-}: {
+}: //   rotation,
+{
   top: number;
   left: number;
   height: number;
   width: number;
+  //   rotation: number;
 }) => {
   return (
     <div
+      className="highlight-on-page"
       style={{
         top: `${top}%`,
         left: `${left}%`,
@@ -24,16 +29,24 @@ const Highlight = ({
         position: "absolute",
         backgroundColor: "yellow",
         opacity: 0.5,
+        // rotate: `${rotation}deg`,
       }}
     ></div>
   );
 };
 
-const TestHighlightsLayer = () => {
+const TestHighlightsLayer = (props: RenderPageProps) => {
+  const pageHighlights = highlightData.filter(
+    (highlight) => highlight.pageIndex === props.pageIndex
+  );
   return (
     <div style={{ zIndex: 1 }}>
-      {highlightData.map((highlight, index) => (
-        <Highlight key={index} {...highlight} />
+      {pageHighlights.map((highlight, index) => (
+        <Highlight
+          key={index}
+          {...highlight}
+          //  rotation={props.rotate}
+        />
       ))}
     </div>
   );
