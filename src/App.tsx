@@ -41,7 +41,14 @@ function App() {
   };
 
   const renderPage = (props: RenderPageProps) => {
-    return <Page {...props} />;
+    return (
+      <>
+        <Page {...props} />
+        <div style={{ position: "absolute", top: "10%", left: "10%" }}>
+          Highlight Layer
+        </div>
+      </>
+    );
   };
 
   return (
