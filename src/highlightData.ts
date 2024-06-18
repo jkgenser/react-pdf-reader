@@ -13,5 +13,4 @@ export const highlightData = [
   //   width: 5.21939,
   //   pageIndex: 1,
   // },
-  //   { top: 10, left: 20, height: 2, width: 10, pageIndex: 2 },
 ];
