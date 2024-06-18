@@ -10,7 +10,7 @@ import usePageObserver from "../hooks/usePageObserver";
 import useVirtualizerVelocity from "../hooks/useVirtualizerVelocity";
 import { getOffsetForHighlight } from "../util";
 
-const EXTRA_HEIGHT = 30;
+const EXTRA_HEIGHT = 10;
 const RESERVE_WIDTH = 50;
 
 const determineScale = (parentElement: HTMLElement, width: number): number => {
@@ -70,6 +70,7 @@ const Reader = ({
             scale: scale as number,
             rotation,
           });
+          console.log({ viewport, scale, rotation });
           return viewport;
         })
       );
@@ -128,6 +129,7 @@ const Reader = ({
         "start"
       )[0];
       const itemHeight = estimateSize(area.pageIndex);
+      console.log("itemHeight", itemHeight);
       const offset = getOffsetForHighlight({
         ...area,
         rotation,
@@ -155,8 +157,6 @@ const Reader = ({
   });
   const isScrollingFast = Math.abs(normalizedVelocity) > 1;
   const shouldRender = !isScrollingFast;
-
-  console.log("scrollOffset", virtualizer.scrollOffset);
 
   return (
     <div
