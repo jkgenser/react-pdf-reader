@@ -89,7 +89,9 @@ function App() {
         </div>
         <button
           onClick={() => {
-            readerAPI && wantPage !== null && readerAPI.jumpToPage(wantPage);
+            readerAPI &&
+              wantPage !== null &&
+              readerAPI.jumpToPage(wantPage - 1);
           }}
         >
           jump to page
@@ -99,6 +101,30 @@ function App() {
           value={wantPage !== null ? wantPage : ""}
           onChange={handleWantPageChange}
         />
+        <button
+          // onClick={() => {
+          //   readerAPI &&
+          //     readerAPI.jumpToHighlightArea({
+          //       top: 14.2,
+          //       left: 12,
+          //       height: 2.3,
+          //       width: 7.5,
+          //       pageIndex: 0,
+          //     });
+          // }}
+          onClick={() => {
+            readerAPI &&
+              readerAPI.jumpToHighlightArea({
+                top: 10,
+                left: 25,
+                height: 5,
+                width: 10,
+                pageIndex: 1,
+              });
+          }}
+        >
+          jump to highlight
+        </button>
       </div>
       <div
         style={{

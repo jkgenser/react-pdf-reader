@@ -8,6 +8,7 @@ import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 import Page from "./Page";
 import usePageObserver from "../hooks/usePageObserver";
 import useVirtualizerVelocity from "../hooks/useVirtualizerVelocity";
+import { getOffsetForHighlight } from "../util";
 
 const EXTRA_HEIGHT = 30;
 const RESERVE_WIDTH = 50;
@@ -108,19 +109,35 @@ const Reader = ({
     if (!setReaderAPI) return;
 
     const jumpToPage = (pageIndex: number) => {
-      virtualizer.scrollToIndex(pageIndex - 1, {
+      virtualizer.scrollToIndex(pageIndex, {
         align: "start",
         behavior: "smooth",
       });
     };
 
-    const jumpToHighlightArea = (area: HighlightArea) => {};
+    const jumpToHighlightArea = (area: HighlightArea) => {
+      const startOffset = virtualizer.getOffsetForIndex(
+        area.pageIndex,
+        "start"
+      )[0];
+      const itemHeight = estimateSize(area.pageIndex);
+      const offset = getOffsetForHighlight({
+        ...area,
+        rotation,
+        itemHeight,
+        startOffset,
+      });
+
+      virtualizer.scrollToOffset(offset, {
+        align: "start",
+        behavior: "smooth",
+      });
+    };
 
     setReaderAPI({
       jumpToPage,
       jumpToHighlightArea,
     });
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewports]);
 
