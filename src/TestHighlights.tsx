@@ -1,10 +1,6 @@
+import { highlightData } from "./highlightData";
 import { RenderPageProps } from "./types";
 import { transformHighlightProps } from "./util";
-
-const highlightData = [
-  { top: 14.2, left: 12, height: 2.3, width: 7.5, pageIndex: 0 },
-  { top: 10, left: 25, height: 5, width: 10, pageIndex: 1 },
-];
 
 const Highlight = ({
   top,

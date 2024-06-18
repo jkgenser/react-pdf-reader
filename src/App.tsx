@@ -9,6 +9,7 @@ import { ChangeEvent, useState } from "react";
 import { PageChangeEvent, ReaderAPI, RenderPageProps } from "./types";
 import { Page } from "react-pdf";
 import TestHighlightsLayer from "./TestHighlights";
+import { highlightData } from "./highlightData";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -19,6 +20,7 @@ function App() {
   const [file, setFile] = useState<string>("pdf-open-parameters.pdf");
   const [wantPage, setWantPage] = useState<number | null>(null);
   const [readerAPI, setReaderAPI] = useState<ReaderAPI | null>(null);
+  const [offset, setOffset] = useState<number | null>(null);
 
   const onPageChange = (e: PageChangeEvent) => {
     setPageNum(e.currentPage);
@@ -39,6 +41,11 @@ function App() {
   const handleWantPageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
     setWantPage(isNaN(value) ? null : value);
+  };
+
+  const handleOffsetChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setOffset(isNaN(value) ? null : value);
   };
 
   const renderPage = (props: RenderPageProps) => {
@@ -103,27 +110,22 @@ function App() {
         />
         <button
           onClick={() => {
-            readerAPI &&
-              readerAPI.jumpToHighlightArea({
-                top: 14.2,
-                left: 12,
-                height: 2.3,
-                width: 7.5,
-                pageIndex: 0,
-              });
+            readerAPI && readerAPI.jumpToHighlightArea(highlightData[0]);
           }}
-          // onClick={() => {
-          //   readerAPI &&
-          //     readerAPI.jumpToHighlightArea({
-          //       top: 10,
-          //       left: 25,
-          //       height: 5,
-          //       width: 10,
-          //       pageIndex: 1,
-          //     });
-          // }}
         >
           jump to highlight
+        </button>
+        <input
+          type="number"
+          value={offset !== null ? offset : ""}
+          onChange={handleOffsetChange}
+        />
+        <button
+          onClick={() => {
+            readerAPI && offset !== null && readerAPI.jumpToOffset(offset);
+          }}
+        >
+          jump to offset
         </button>
       </div>
       <div

@@ -2,7 +2,7 @@ import { Page as ReactPdfPage } from "react-pdf";
 import { useEffect, useRef } from "react";
 import { ReaderPageProps, RenderPage, RenderPageProps } from "../types";
 
-const EXTRA_WIDTH = 10;
+const EXTRA_WIDTH = 5;
 
 const Page = ({
   virtualItem,
@@ -57,10 +57,18 @@ const Page = ({
           backgroundColor: "white",
           display: "flex",
           justifyContent: "center",
+          height: "fit-content",
         }}
       >
         {shouldRender && (
-          <div className="page-wrapper" style={{ position: "relative" }}>
+          <div
+            className="page-wrapper"
+            style={{
+              position: "relative",
+              height: "fit-content",
+              width: "fit-content",
+            }}
+          >
             {renderPageLayer({
               pageIndex: virtualItem.index,
               scale,

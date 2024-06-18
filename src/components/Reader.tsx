@@ -115,6 +115,13 @@ const Reader = ({
       });
     };
 
+    const jumpToOffset = (offset: number) => {
+      virtualizer.scrollToOffset(offset, {
+        align: "start",
+        behavior: "smooth",
+      });
+    };
+
     const jumpToHighlightArea = (area: HighlightArea) => {
       const startOffset = virtualizer.getOffsetForIndex(
         area.pageIndex,
@@ -125,7 +132,7 @@ const Reader = ({
         ...area,
         rotation,
         itemHeight,
-        startOffset: startOffset + 2,
+        startOffset: startOffset,
       });
 
       virtualizer.scrollToOffset(offset, {
@@ -137,6 +144,7 @@ const Reader = ({
     setReaderAPI({
       jumpToPage,
       jumpToHighlightArea,
+      jumpToOffset,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewports]);

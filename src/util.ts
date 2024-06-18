@@ -69,26 +69,30 @@ export const getOffsetForHighlight = ({
   itemHeight: number;
   startOffset: number;
 }) => {
-  const fromBottom180 = (itemHeight * (100 - top - height)) / 100;
+  const bottomOffset = startOffset + itemHeight;
+  const topP = top * itemHeight * 0.01;
+  const leftP = left * itemHeight * 0.01;
+  const heightP = height * itemHeight * 0.01;
+  const widthP = height * itemHeight * 0.01;
+
   let extraOffset;
   switch (rotation) {
     case 0:
       extraOffset = (top * itemHeight) / 100;
       break;
-    // return startOffset + (top * itemHeight) / 100;
+
     case 90:
       extraOffset = (left * itemHeight) / 100;
       break;
-    // return startOffset + (left * itemHeight) / 100;
+
     case 180:
-      extraOffset = ((100 - top) * itemHeight) / 100;
-      // extraOffset = fromBottom180;
+      extraOffset = itemHeight - topP - heightP - 18;
       break;
-    // return startOffset + fromBottom180;
+
     case 270:
-      extraOffset = fromBottom180 - (width * itemHeight) / 100;
+      extraOffset = itemHeight - leftP - widthP - 18;
       break;
-    // return startOffset + (itemHeight * (100 - (left + 1.25 * width))) / 100;
+
     default:
       extraOffset = (top * itemHeight) / 100;
   }
@@ -102,6 +106,7 @@ export const getOffsetForHighlight = ({
     extraOffset,
     rotation,
     itemHeight,
+    bottomOffset,
   });
 
   return startOffset + extraOffset;
