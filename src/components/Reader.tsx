@@ -125,7 +125,7 @@ const Reader = ({
         ...area,
         rotation,
         itemHeight,
-        startOffset,
+        startOffset: startOffset + 2,
       });
 
       virtualizer.scrollToOffset(offset, {
@@ -147,6 +147,8 @@ const Reader = ({
   });
   const isScrollingFast = Math.abs(normalizedVelocity) > 1;
   const shouldRender = !isScrollingFast;
+
+  console.log("scrollOffset", virtualizer.scrollOffset);
 
   return (
     <div
