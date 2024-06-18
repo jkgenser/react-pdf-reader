@@ -48,7 +48,7 @@ const Page = ({
       <div
         id="page-inner-box"
         style={{
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           border: "1px solid lightgray",
           borderRadius: "4px",
           width: `${viewports[virtualItem.index].width + EXTRA_WIDTH}px`,

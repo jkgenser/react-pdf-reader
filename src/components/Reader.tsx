@@ -131,8 +131,8 @@ const Reader = ({
       const offset = getOffsetForHighlight({
         ...area,
         rotation,
-        itemHeight,
-        startOffset: startOffset,
+        itemHeight: itemHeight - 10, // accounts for padding top and bottom
+        startOffset: startOffset - 5, // accounts for padding on top
       });
 
       virtualizer.scrollToOffset(offset, {
