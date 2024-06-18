@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Document } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ReaderProps } from "../types";
+import { HighlightArea, ReaderProps } from "../types";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
@@ -107,14 +107,20 @@ const Reader = ({
   useEffect(() => {
     if (!setReaderAPI) return;
 
+    const jumpToPage = (pageIndex: number) => {
+      virtualizer.scrollToIndex(pageIndex - 1, {
+        align: "start",
+        behavior: "smooth",
+      });
+    };
+
+    const jumpToHighlightArea = (area: HighlightArea) => {};
+
     setReaderAPI({
-      jumpToPage: (pageIndex: number) => {
-        virtualizer.scrollToIndex(pageIndex - 1, {
-          align: "start",
-          behavior: "smooth",
-        });
-      },
+      jumpToPage,
+      jumpToHighlightArea,
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewports]);
 

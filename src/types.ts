@@ -18,6 +18,7 @@ export interface ReaderProps {
 
 export interface ReaderAPI {
   jumpToPage: (pageIndex: number) => void;
+  jumpToHighlightArea: (area: HighlightArea) => void;
 }
 
 // height, left, top, width are 0-100% values
