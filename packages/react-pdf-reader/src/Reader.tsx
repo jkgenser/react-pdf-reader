@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Document } from "react-pdf";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { HighlightArea, ReaderProps } from "../types";
+import { HighlightArea, ReaderProps } from "./types";
 import { PDFDocumentProxy } from "pdfjs-dist/types/src/display/api";
 import { PageViewport } from "pdfjs-dist//types/src/display/display_utils";
 
 import Page from "./Page";
-import usePageObserver from "../hooks/usePageObserver";
-import useVirtualizerVelocity from "../hooks/useVirtualizerVelocity";
-import { getOffsetForHighlight } from "../util";
+import usePageObserver from "./usePageObserver";
+import useVirtualizerVelocity from "./useVirtualizerVelocity";
+import { getOffsetForHighlight } from "./util";
 
 const EXTRA_HEIGHT = 10;
 const RESERVE_WIDTH = 50;
